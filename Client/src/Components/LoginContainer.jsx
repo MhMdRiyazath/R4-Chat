@@ -50,7 +50,7 @@ const login = () => {
           </>
         }
 
-        <p>{isSignUp ? "Already have an account?":"Don't have an account?"} <span className='text-purple-500 cursor-pointer' onClick={() => setSignUp(!isSignUp)}>{isSignUp ? "Login":"SignUp"}</span></p>
+        <p>{isSignUp ? "Already have an account":"Don't have an account?"} <span className='text-purple-500 cursor-pointer' onClick={() => setSignUp(!isSignUp)}>{isSignUp ? "Login":"SignUp"}</span></p>
       </div>
 
     </div>

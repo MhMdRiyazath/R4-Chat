@@ -1,12 +1,10 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
+const userRoutes = require("./Routes/userRoutes");
 
 const app = express(); //initialize express server
-
-app.get("/", (req, res) => {
-  res.send("Api is running...");
-});
+app.use(express.json()); //parse the json data
 
 dotenv.config(); //initialize dotenv
 
@@ -21,6 +19,12 @@ const connectDB = async () => {
 };
 
 connectDB(); //call the connectDB function
+
+app.get("/", (req, res) => {
+    res.send("Api is running...");
+  });
+
+app.use("/user",userRoutes); //use the userRoutes
 
 const PORT = process.env.PORT || 5000;
 
