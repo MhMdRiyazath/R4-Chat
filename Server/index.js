@@ -1,5 +1,6 @@
 const express = require('express');
 const dotenv = require('dotenv');
+const mongoose = require('mongoose');
 
 const app = express();//initialize express server
 
@@ -8,6 +9,18 @@ app.get('/', (req, res) => {
 })
 
 dotenv.config();//initialize dotenv 
+
+//connect to the database
+const connectDB = async()=>{
+    try{
+    const connect =await mongoose.connect(process.env.MONGO_URI);
+    console.log('MongoDB connected');
+}catch(err){
+    console.log(err);
+}
+}
+
+connectDB();//call the connectDB function
 
 const PORT = process.env.PORT || 5000;
 
