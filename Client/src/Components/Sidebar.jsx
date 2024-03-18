@@ -8,6 +8,7 @@ import AddCircleIcon from '@mui/icons-material/AddCircle';
 import NightlightIcon from '@mui/icons-material/Nightlight';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import SearchIcon from '@mui/icons-material/Search';
+import LogoutIcon from '@mui/icons-material/Logout';
 
 
 import { IconButton } from '@mui/material'
@@ -62,6 +63,9 @@ const navigate = useNavigate();
                     </IconButton>
                     <IconButton onClick={changeTheme} className='dark:text-white'>
                         {darkMode ? <LightModeIcon className="text-white" /> : <NightlightIcon />}
+                    </IconButton>
+                    <IconButton onClick={()=>{navigate('users')}} className='dark:text-white'>
+                        <LogoutIcon/>
                     </IconButton>
                 </div>
             </div>
