@@ -2,6 +2,8 @@ const express = require("express");
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
 const userRoutes = require("./Routes/userRoutes");
+const chatRoutes = require("./Routes/chatRoutes");
+const messageRoutes = require("./Routes/messageRoutes");
 const cors = require('cors');
 const app = express(); //initialize express server
 app.use(express.json()); //parse the json data
@@ -26,6 +28,8 @@ app.get("/", (req, res) => {
   });
 
 app.use("/user",userRoutes); //use the userRoutes
+app.use("/chat", chatRoutes); //use the chatRoutes
+app.use("/message", messageRoutes); //use the messageRoutes
 
 const PORT = process.env.PORT || 3000;
 

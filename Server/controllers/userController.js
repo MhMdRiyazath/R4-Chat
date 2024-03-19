@@ -35,13 +35,13 @@ const registerController = async (req, res) => {
       isAdmin: user.isAdmin,
       token: generateToken(user._id),
     });
+
+    
   } else {
     res.status(400);
     throw new Error("cannot create user");
   }
 };
-
-
 
 const loginController = async (req, res) => {
   const { name, password } = req.body;
@@ -62,7 +62,28 @@ const loginController = async (req, res) => {
   }
 };
 
+const fetchUsersController = async (req, res) => {
+  try {
+    const keyword = req.query.search
+      ? {
+          $or: [
+            { name: { $regex: req.query.search, $options: "i" } },
+            { email: { $regex: req.query.search, $options: "i" } }, // Add other fields if necessary
+          ],
+        }
+      : {};
+
+    const users = await UserModel.find({ ...keyword, _id: { $ne: req.user._id } });
+
+    res.json(users);
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
 module.exports = {
   registerController,
   loginController,
+  fetchUsersController,
 };

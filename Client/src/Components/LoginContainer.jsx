@@ -27,8 +27,11 @@ const login = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data)
       })
+      
+      const responseData = await response.json();
+      localStorage.setItem("userData", JSON.stringify(responseData))
 
-      console.log("login res:", response)
+      console.log("regis res:", response)
       navigate("/app/welcome")
       setLoading(false)
 
@@ -50,7 +53,8 @@ const login = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data)
       })
-
+      const responseData = await response.json();
+      localStorage.setItem("userData", JSON.stringify(responseData))
       console.log("login res:", response)
       navigate("/app/welcome")
       setLoading(false)
