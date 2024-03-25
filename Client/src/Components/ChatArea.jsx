@@ -7,7 +7,14 @@ import MessageSelf from './MessageSelf'
 import { useSelector } from 'react-redux';
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import io from "socket.io-client";
 
+import { useDispatch } from 'react-redux';
+import { toggleRefresh } from '../redux/refreshSlicer';
+
+
+// const ENDPOINT = "http://localhost:3000";
+// var socket, chat
 
 
 const ChatArea = () => {
@@ -19,13 +26,15 @@ const ChatArea = () => {
     // console.log(chat_id, chat_user);
     const userData = JSON.parse(localStorage.getItem("userData"));
     const [allMessages, setAllMessages] = useState([]);
+    const [allMessagesCopy, setAllMessagesCopy] = useState([]);
     // console.log("Chat area id : ", chat_id._id);
     // const refresh = useSelector((state) => state.refreshKey);
+    const [socketConnectionStatus, setSocketConnectionStatus] = useState(false);
 
+    const dispatch = useDispatch();
+    const refresh = useSelector((state) => state.refreshKey);
 
     const sendMessage = () => {
- 
-        // console.log("SendMessage Fired to", chat_id._id);
         const config = {
             headers: {
                 Authorization: `Bearer ${userData.token}`,
@@ -39,16 +48,45 @@ const ChatArea = () => {
             },
             config
         )
-            .then(({ data }) => {
-                console.log("Message Fired");
+            .then((response) => {
+                const responseData = response.data; // Access response data directly
+                console.log(responseData);
+                setMessageContent(""); // Clear message content after sending
+                dispatch(toggleRefresh());
+                // socket.emit("new message", responseData); // Emit the response data
+            })
+            .catch((error) => {
+                console.error("Error sending message:", error);
+                // Handle error appropriately (e.g., show error message to the user)
             });
-
-            setMessageContent("");
     };
 
     // const scrollToBottom = () => {
     //   messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     // };
+
+    //connect to the socket
+
+    // useEffect(() => {
+    //     socket = io(ENDPOINT);
+    //     socket.emit("setup", userData);
+    //     socket.on("connection", () => {
+    //         setSocketConnectionStatus(!socketConnectionStatus);
+    //     });
+    // }, [])
+
+    // new message received
+
+    // useEffect(() => {
+    //     socket.on("message received", (newMessageStatus) => {
+    //         if (!allMessagesCopy || allMessagesCopy._id !== newMessageStatus._id) {
+    //             // setAllMessages([...allMessages, newMessageStatus]);
+    //         } else {
+    //             setAllMessages([...allMessages, newMessageStatus]);
+    //         }
+    //     });
+    // })
+
 
     useEffect(() => {
         console.log("Users refreshed");
@@ -60,11 +98,12 @@ const ChatArea = () => {
         axios.get("http://localhost:3000/message/" + chat_id, config)
             .then(({ data }) => {
                 setAllMessages(data);
+                socket.emit("join chat", chat_id);
 
-                console.log("Data from Acess Chat API ", data);
             });
+        setAllMessagesCopy(allMessages);
         // scrollToBottom();
-    }, [messageContent,chat_user]);
+    }, [messageContent, chat_user]);
 
     return (
         <div className='flex-[0.7] flex flex-col'>
@@ -83,7 +122,7 @@ const ChatArea = () => {
             <div className='bg-white flex-1 m-2  rounded-lg gap-3 overflow-y-scroll no-scrollbar shadow-2xl dark:dark-mode'>
                 {allMessages
                     .slice(0)
-                 
+
                     .map((message, index) => {
                         const sender = message.sender;
                         const self_id = userData._id;
@@ -107,7 +146,7 @@ const ChatArea = () => {
                         if (event.code == "Enter") {
                             // console.log(event);
                             sendMessage();
-                            
+
                         }
                     }}
                 />

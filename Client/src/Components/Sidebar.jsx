@@ -16,11 +16,14 @@ import ConversationsItem from './ConversationsItem';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { toggleTheme } from '../redux/themeSlice';
+import { toggleRefresh } from '../redux/refreshSlicer';
 import axios from 'axios';
 
 const Sidebar = () => {
     const darkMode = useSelector(state => state.themeKey)
     const dispatch = useDispatch()
+
+    const refresh = useSelector((state) => state.refreshKey);
 
 
     const [conversations, setConversations] = useState([]);
@@ -47,7 +50,7 @@ const Sidebar = () => {
             setConversations(response.data);
 
         });
-    }, []);
+    }, [refresh]);
 
 
     function changeTheme() {
